@@ -1,0 +1,12 @@
+import {cookies} from "next/headers";
+import {NextRequest, NextResponse} from "next/server";
+import {AUTH_COOKIES} from "@/lib/auth/cookies";
+import {getBackendClient} from "@/lib/backend-client";
+import {normalizeBackendError} from "@/lib/server/backend-error";
+
+const QUERY_FIELDS = ["status", "sort", "page", "limit"] as const;
+const CREATE_FIELDS = ["name", "name_ar", "description", "description_ar", "is_active"] as const;
+function isRecord(value: unknown): value is Record<string, unknown> { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
+async function getAccessToken() { return (await cookies()).get(AUTH_COOKIES.access)?.value; }
+export async function GET(request: NextRequest) { const token = await getAccessToken(); if (!token) return NextResponse.json({code: "UNAUTHENTICATED"}, {status: 401}); const params = Object.fromEntries(QUERY_FIELDS.flatMap((key) => { const value = request.nextUrl.searchParams.get(key); return value ? [[key, value]] : []; })); try { const response = await getBackendClient().get("/api/super-admin/categories", {headers: {Authorization: `Bearer ${token}`}, params}); return NextResponse.json(response.data, {headers: {"Cache-Control": "no-store"}}); } catch (error) { const normalized = normalizeBackendError(error, "Unable to load categories"); return NextResponse.json(normalized.body, {status: normalized.status}); } }
+export async function POST(request: NextRequest) { const token = await getAccessToken(); if (!token) return NextResponse.json({code: "UNAUTHENTICATED"}, {status: 401}); let body: unknown; try { body = await request.json(); } catch { return NextResponse.json({code: "INVALID_JSON"}, {status: 400}); } if (!isRecord(body) || typeof body.name !== "string") return NextResponse.json({code: "INVALID_CATEGORY"}, {status: 400}); const payload = Object.fromEntries(CREATE_FIELDS.flatMap((field) => { const value = body[field]; return typeof value === "string" || typeof value === "boolean" || value === null ? [[field, value]] : []; })); try { const response = await getBackendClient().post("/api/super-admin/categories", payload, {headers: {Authorization: `Bearer ${token}`}}); return NextResponse.json(response.data, {headers: {"Cache-Control": "no-store"}}); } catch (error) { const normalized = normalizeBackendError(error, "Unable to create category"); return NextResponse.json(normalized.body, {status: normalized.status}); } }
