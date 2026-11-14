@@ -45,13 +45,13 @@
     "stores": "المتاجر",
     "products": "المنتجات",
     "management": "الإدارة",
-    "storeAdmins": "مديرو المتاجر", "categories": "الفئات", "subcategories": "الفئات الفرعية"
+    "storeAdmins": "مديرو المتاجر", "categories": "الفئات", "subcategories": "الفئات الفرعية", "openNavigation": "فتح التنقل", "closeNavigation": "إغلاق التنقل"
   },
-  "Subcategories": {"eyebrow":"إدارة التصنيفات","title":"الفئات الفرعية","description":"راجع وأدر الفئات الفرعية للمنتجات.","tableTitle":"دليل الفئات الفرعية","add":"إضافة فئة فرعية","loading":"جارٍ تحميل الفئات الفرعية…","results":"تم العثور على {count} فئة فرعية","empty":"لا توجد فئات فرعية متاحة.","name":"الاسم","nameAr":"الاسم (بالعربية)","category":"الفئة","selectCategory":"اختر الفئة","categoryRequired":"اختر فئة.","nameRequired":"أدخل اسم الفئة الفرعية.","status":"الحالة","active":"نشط","inactive":"غير نشط","actions":"الإجراءات","view":"عرض تفاصيل الفئة الفرعية","edit":"تعديل الفئة الفرعية","delete":"حذف الفئة الفرعية","deleteTitle":"حذف الفئة الفرعية؟","deleteMessage":"لا يمكن التراجع عن هذا الإجراء.","confirmDelete":"حذف الفئة الفرعية","deleting":"جارٍ الحذف…","cancel":"إلغاء","loadError":"تعذر تحميل الفئات الفرعية.","createTitle":"إضافة فئة فرعية","save":"حفظ التغييرات","saving":"جارٍ الحفظ…","create":"إنشاء فئة فرعية"},
+  "Subcategories": {"eyebrow":"إدارة التصنيفات","title":"الفئات الفرعية","description":"راجع وأدر الفئات الفرعية للمنتجات.","tableTitle":"دليل الفئات الفرعية","add":"إضافة فئة فرعية","searchPlaceholder":"البحث في الفئات الفرعية","loading":"جارٍ تحميل الفئات الفرعية…","results":"تم العثور على {count} فئة فرعية","empty":"لا توجد فئات فرعية متاحة.","name":"الاسم","nameAr":"الاسم (بالعربية)","category":"الفئة","selectCategory":"اختر الفئة","categoryRequired":"اختر فئة.","nameRequired":"أدخل اسم الفئة الفرعية.","status":"الحالة","active":"نشط","inactive":"غير نشط","actions":"الإجراءات","view":"عرض تفاصيل الفئة الفرعية","edit":"تعديل الفئة الفرعية","delete":"حذف الفئة الفرعية","deleteTitle":"حذف الفئة الفرعية؟","deleteMessage":"لا يمكن التراجع عن هذا الإجراء.","confirmDelete":"حذف الفئة الفرعية","deleting":"جارٍ الحذف…","cancel":"إلغاء","loadError":"تعذر تحميل الفئات الفرعية.","createTitle":"إضافة فئة فرعية","save":"حفظ التغييرات","saving":"جارٍ الحفظ…","create":"إنشاء فئة فرعية"},
   "SubcategoryDetails": {"detailsTitle":"تفاصيل الفئة الفرعية","editTitle":"تعديل الفئة الفرعية","detailsDescription":"راجع هذه الفئة الفرعية.","editDescription":"حدّث هذه الفئة الفرعية.","details":"معلومات الفئة الفرعية","description":"الوصف","descriptionAr":"الوصف (بالعربية)","createdAt":"تاريخ الإنشاء","updatedAt":"آخر تحديث","notAvailable":"غير متوفر","unnamed":"فئة فرعية بدون اسم","editAction":"تعديل الفئة الفرعية","loadError":"تعذر تحميل هذه الفئة الفرعية.","sessionExpired":"انتهت جلستك. يرجى تسجيل الدخول مجددًا.","notFound":"هذه الفئة الفرعية غير متاحة أو لم تعد موجودة.","backToSubcategories":"العودة إلى الفئات الفرعية","save":"حفظ التغييرات","saving":"جارٍ الحفظ…","fieldRequired":"أدخل قيمة."},
   "TaxonomyList": {"statusFilter":"تصفية حسب الحالة","sortFilter":"الترتيب","all":"الكل","newest":"الأحدث","oldest":"الأقدم","nameAsc":"الاسم أ-ي","nameDesc":"الاسم ي-أ","allCategories":"كل الفئات","reset":"إعادة ضبط المرشحات","previous":"السابق","next":"التالي","page":"الصفحة {page} من {total}","noMatches":"لا توجد نتائج مطابقة."},
   "Categories": {
-    "eyebrow": "إدارة التصنيفات", "title": "الفئات", "description": "راجع وأدر فئات المنتجات.", "tableTitle": "دليل الفئات", "add": "إضافة فئة", "loading": "جارٍ تحميل الفئات…", "results": "تم العثور على {count} فئة", "empty": "لا توجد فئات متاحة.", "name": "الاسم", "nameAr": "الاسم (بالعربية)", "description": "الوصف", "descriptionAr": "الوصف (بالعربية)", "slug": "المعرّف", "status": "الحالة", "active": "نشط", "inactive": "غير نشط", "actions": "الإجراءات", "view": "عرض تفاصيل الفئة", "edit": "تعديل الفئة", "delete": "حذف الفئة", "deleteTitle": "حذف الفئة؟", "deleteMessage": "لا يمكن التراجع عن هذا الإجراء.", "confirmDelete": "حذف الفئة", "deleting": "جارٍ الحذف…", "cancel": "إلغاء", "loadError": "تعذر تحميل الفئات.", "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مجددًا.", "unnamed": "فئة بدون اسم", "notAvailable": "غير متوفر", "createTitle": "إضافة فئة", "editTitle": "تعديل الفئة", "detailsTitle": "تفاصيل الفئة", "createDescription": "أنشئ فئة للمنتجات.", "editDescription": "حدّث فئة المنتجات هذه.", "detailsDescription": "راجع تفاصيل الفئة.", "details": "معلومات الفئة", "create": "إنشاء فئة", "save": "حفظ التغييرات", "saving": "جارٍ الحفظ…", "nameRequired": "أدخل اسم الفئة.", "nameArRequired": "أدخل اسم الفئة بالعربية.", "pairedRequired": "أدخل القيمتين باللغتين معًا."
+    "eyebrow": "إدارة التصنيفات", "title": "الفئات", "description": "راجع وأدر فئات المنتجات.", "tableTitle": "دليل الفئات", "add": "إضافة فئة", "searchPlaceholder": "البحث في الفئات", "loading": "جارٍ تحميل الفئات…", "results": "تم العثور على {count} فئة", "empty": "لا توجد فئات متاحة.", "name": "الاسم", "nameAr": "الاسم (بالعربية)", "description": "الوصف", "descriptionAr": "الوصف (بالعربية)", "slug": "المعرّف", "status": "الحالة", "active": "نشط", "inactive": "غير نشط", "actions": "الإجراءات", "view": "عرض تفاصيل الفئة", "edit": "تعديل الفئة", "delete": "حذف الفئة", "deleteTitle": "حذف الفئة؟", "deleteMessage": "لا يمكن التراجع عن هذا الإجراء.", "confirmDelete": "حذف الفئة", "deleting": "جارٍ الحذف…", "cancel": "إلغاء", "loadError": "تعذر تحميل الفئات.", "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مجددًا.", "unnamed": "فئة بدون اسم", "notAvailable": "غير متوفر", "createTitle": "إضافة فئة", "editTitle": "تعديل الفئة", "detailsTitle": "تفاصيل الفئة", "createDescription": "أنشئ فئة للمنتجات.", "editDescription": "حدّث فئة المنتجات هذه.", "detailsDescription": "راجع تفاصيل الفئة.", "details": "معلومات الفئة", "create": "إنشاء فئة", "save": "حفظ التغييرات", "saving": "جارٍ الحفظ…", "nameRequired": "أدخل اسم الفئة.", "nameArRequired": "أدخل اسم الفئة بالعربية.", "pairedRequired": "أدخل القيمتين باللغتين معًا."
   },
   "StoreAdmins": {
     "eyebrow": "وصول المنصة",
@@ -62,9 +62,11 @@
     "loading": "جارٍ تحميل مديري المتاجر…",
     "unableToLoad": "تعذر تحميل مديري المتاجر",
     "results": "تم العثور على {count} تعيين",
-    "empty": "لا توجد تعيينات لمديري المتاجر تطابق عوامل التصفية الحالية.",
+    "empty": "لا توجد تعيينات لمديري المتاجر متاحة.",
+    "noResults": "لا توجد تعيينات لمديري المتاجر تطابق عوامل التصفية الحالية.",
     "refreshing": "جارٍ تحديث مديري المتاجر",
     "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني",
+    "filters": "عوامل التصفية",
     "storeFilter": "التصفية حسب المتجر",
     "allStores": "كل المتاجر",
     "statusFilter": "التصفية حسب حالة التعيين",
@@ -122,6 +124,9 @@
     "noChanges": "لا توجد تغييرات لحفظها.",
     "assignment": "التعيين",
     "account": "الحساب",
+    "identity": "الهوية",
+    "accountInformation": "معلومات الحساب",
+    "statusOverview": "نظرة عامة على الحالة",
     "backToList": "العودة إلى مديري المتاجر",
     "notFoundTitle": "تعيين مدير المتجر غير موجود",
     "notFound": "تعيين مدير المتجر هذا غير متاح أو لم يعد موجودًا.",
@@ -276,6 +281,12 @@
       "name": "اسم المتجر",
       "location": "الموقع",
       "phone": "الهاتف",
+      "basicInformation": "المعلومات الأساسية",
+      "images": "الصور",
+      "logo": "الشعار",
+      "coverImage": "صورة الغلاف",
+      "logoUnavailable": "الشعار: غير متوفر",
+      "coverImageUnavailable": "صورة الغلاف: غير متوفرة",
       "logoUrl": "رابط الشعار",
       "coverUrl": "رابط صورة الغلاف",
       "descriptionField": "الوصف",
@@ -380,6 +391,12 @@
       "productForm": {
         "createTitle": "إضافة منتج",
         "editTitle": "تعديل المنتج",
+        "sections": {
+          "basic": "المعلومات الأساسية",
+          "description": "الوصف",
+          "images": "الصور",
+          "status": "الحالة"
+        },
         "store": "المتجر",
         "selectStore": "اختر المتجر",
         "storeRequired": "اختر متجرًا.",
@@ -490,6 +507,14 @@
       "telegramUrl": "رابط تيليجرام",
       "socialLinks": "روابط إضافية",
       "socialLinksHint": "أضف كل رابط إضافي بشكل منفصل.",
+      "sections": {
+        "basic": "المعلومات الأساسية",
+        "description": "الوصف",
+        "location": "الموقع",
+        "contact": "معلومات التواصل",
+        "media": "الشعار وصورة الغلاف",
+        "links": "التواصل والروابط الإضافية"
+      },
       "linkName": "اسم الرابط",
       "linkUrl": "الرابط",
       "addAdditionalLink": "إضافة رابط",

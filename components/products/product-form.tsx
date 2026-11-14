@@ -68,7 +68,7 @@ export function ProductForm({storeId: initialStoreId, productId}: ProductFormPro
     setIsActive(product.is_active);
   }, [data]);
 
-  if (isEditing && isLoading) return <section className="store-form-panel"><div className="table-state">{common("loading")}</div></section>;
+  if (isEditing && isLoading) return <ProductFormSkeleton label={common("loading")} />;
   const storeId = isEditing
     ? data?.product.store_id ?? data?.product.store?.id
     : initialStoreId ?? selectedStoreId;
@@ -145,19 +145,27 @@ export function ProductForm({storeId: initialStoreId, productId}: ProductFormPro
 
   return (
     <section className="store-form-panel">
-      <form className="store-form" noValidate onSubmit={submit}>
+      <form className={`store-form${isEditing ? " product-edit-form" : ""}`} noValidate onSubmit={submit}>
         <div className="store-form-grid">
-          {!isEditing && !initialStoreId ? <div className="field" data-field="store_id"><label>{t("store")}</label><select value={selectedStoreId} onChange={(event) => {setSelectedStoreId(event.target.value); clearError("store_id");}}><option value="">{t("selectStore")}</option>{storesData?.data.map((store) => <option key={store.id} value={store.id}>{store.name_i18n?.en?.trim() || store.name || store.slug}</option>)}</select>{fieldErrors.store_id ? <p className="field-error">{fieldErrors.store_id}</p> : null}</div> : null}
-          <Field field="name" error={fieldErrors.name} label={t("name")} value={name} onChange={(value) => {setName(value); clearError("name");}} />
-          <Field field="name_ar" error={fieldErrors.name_ar} label={t("nameAr")} value={nameAr} onChange={(value) => {setNameAr(value); clearError("name_ar");}} dir="rtl" />
-          <div className="field" data-field="category"><label>{t("category")}</label><select value={category} onChange={(event) => {setCategory(event.target.value); setSubcategoryId(""); clearError("category"); clearError("subcategory_id");}}><option value="">{t("selectCategory")}</option>{categoriesData?.data.map((item) => <option key={item.id} value={item.slug}>{getLocalizedValue({localized: item.name_i18n, locale, fallback: item.name})}</option>)}</select>{fieldErrors.category ? <p className="field-error">{fieldErrors.category}</p> : null}</div>
-          <div className="field" data-field="subcategory_id"><label>{t("subcategory")}</label><select value={subcategoryId} disabled={!selectedCategory} onChange={(event) => {setSubcategoryId(event.target.value); clearError("subcategory_id");}}><option value="">{t("selectSubcategory")}</option>{subcategoriesData?.data.map((item) => <option key={item.id} value={item.id}>{getLocalizedValue({localized: item.name_i18n, locale, fallback: item.name})}</option>)}</select>{fieldErrors.subcategory_id ? <p className="field-error">{fieldErrors.subcategory_id}</p> : null}</div>
-          <Field field="price" error={fieldErrors.price} label={t("price")} value={price} onChange={(value) => {setPrice(value); clearError("price");}} type="number" />
-          <Field field="description" error={fieldErrors.description} className="store-form-full" label={t("description")} value={description} onChange={(value) => {setDescription(value); clearError("description");}} textarea />
-          <Field field="description_ar" error={fieldErrors.description_ar} className="store-form-full" label={t("descriptionAr")} value={descriptionAr} onChange={(value) => {setDescriptionAr(value); clearError("description_ar");}} textarea dir="rtl" />
-          {isEditing && data?.product.images?.length ? <div className="field store-form-full"><label>{t("currentImages")}</label><div className="product-image-previews">{data.product.images.map((image) => <div className="existing-product-image" key={image.public_id}><img src={image.secure_url ?? image.url} alt="" /><button type="button" className="image-remove-button" disabled={deletingPublicId === image.public_id} onClick={() => removeExistingImage(image.public_id)} aria-label={t("removeExistingImage")}>×</button>{deletingPublicId === image.public_id ? <small>{t("deletingImage")}</small> : null}</div>)}</div></div> : null}
-          <div className="field store-form-full" data-field="images"><label>{isEditing ? t("newImages") : t("images")}</label><input type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple onChange={(event) => addImages(event.target.files)} /><p className="field-hint">{t("imageHint")}</p>{fieldErrors.images ? <p className="field-error">{fieldErrors.images}</p> : null}{imagePreviews.length ? <div className="product-image-previews" aria-label={t("selectedImages")}>{imagePreviews.map(({image, url}, index) => <div className="product-image-preview" key={`${image.name}-${image.lastModified}-${index}`}><img src={url} alt={image.name} /><button className="image-remove-button" type="button" aria-label={t("removeImage", {name: image.name})} onClick={() => setImages((current) => current.filter((_, itemIndex) => itemIndex !== index))}>×</button></div>)}</div> : null}</div>
-          <label className="store-active-control"><input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} />{t("active")}</label>
+          <ProductEditSection enabled={isEditing} title={t("sections.basic")}>
+            {!isEditing && !initialStoreId ? <div className="field" data-field="store_id"><label>{t("store")}</label><select value={selectedStoreId} onChange={(event) => {setSelectedStoreId(event.target.value); clearError("store_id");}}><option value="">{t("selectStore")}</option>{storesData?.data.map((store) => <option key={store.id} value={store.id}>{store.name_i18n?.en?.trim() || store.name || store.slug}</option>)}</select>{fieldErrors.store_id ? <p className="field-error">{fieldErrors.store_id}</p> : null}</div> : null}
+            <Field field="name" error={fieldErrors.name} label={t("name")} value={name} onChange={(value) => {setName(value); clearError("name");}} />
+            <Field field="name_ar" error={fieldErrors.name_ar} label={t("nameAr")} value={nameAr} onChange={(value) => {setNameAr(value); clearError("name_ar");}} dir="rtl" />
+            <div className="field" data-field="category"><label>{t("category")}</label><select value={category} onChange={(event) => {setCategory(event.target.value); setSubcategoryId(""); clearError("category"); clearError("subcategory_id");}}><option value="">{t("selectCategory")}</option>{categoriesData?.data.map((item) => <option key={item.id} value={item.slug}>{getLocalizedValue({localized: item.name_i18n, locale, fallback: item.name})}</option>)}</select>{fieldErrors.category ? <p className="field-error">{fieldErrors.category}</p> : null}</div>
+            <div className="field" data-field="subcategory_id"><label>{t("subcategory")}</label><select value={subcategoryId} disabled={!selectedCategory} onChange={(event) => {setSubcategoryId(event.target.value); clearError("subcategory_id");}}><option value="">{t("selectSubcategory")}</option>{subcategoriesData?.data.map((item) => <option key={item.id} value={item.id}>{getLocalizedValue({localized: item.name_i18n, locale, fallback: item.name})}</option>)}</select>{fieldErrors.subcategory_id ? <p className="field-error">{fieldErrors.subcategory_id}</p> : null}</div>
+            <Field field="price" error={fieldErrors.price} label={t("price")} value={price} onChange={(value) => {setPrice(value); clearError("price");}} type="number" />
+          </ProductEditSection>
+          <ProductEditSection enabled={isEditing} title={t("sections.description")}>
+            <Field field="description" error={fieldErrors.description} className="store-form-full" label={t("description")} value={description} onChange={(value) => {setDescription(value); clearError("description");}} textarea />
+            <Field field="description_ar" error={fieldErrors.description_ar} className="store-form-full" label={t("descriptionAr")} value={descriptionAr} onChange={(value) => {setDescriptionAr(value); clearError("description_ar");}} textarea dir="rtl" />
+          </ProductEditSection>
+          <ProductEditSection enabled={isEditing} title={t("sections.images")}>
+            {isEditing && data?.product.images?.length ? <div className="field store-form-full"><label>{t("currentImages")}</label><div className="product-image-previews">{data.product.images.map((image) => <div className="existing-product-image" key={image.public_id}><img src={image.secure_url ?? image.url} alt="" /><button type="button" className="image-remove-button" disabled={deletingPublicId === image.public_id} onClick={() => removeExistingImage(image.public_id)} aria-label={t("removeExistingImage")}>×</button>{deletingPublicId === image.public_id ? <small>{t("deletingImage")}</small> : null}</div>)}</div></div> : null}
+            <div className="field store-form-full" data-field="images"><label>{isEditing ? t("newImages") : t("images")}</label><input type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple onChange={(event) => addImages(event.target.files)} /><p className="field-hint">{t("imageHint")}</p>{fieldErrors.images ? <p className="field-error">{fieldErrors.images}</p> : null}{imagePreviews.length ? <div className="product-image-previews" aria-label={t("selectedImages")}>{imagePreviews.map(({image, url}, index) => <div className="product-image-preview" key={`${image.name}-${image.lastModified}-${index}`}><img src={url} alt={image.name} /><button className="image-remove-button" type="button" aria-label={t("removeImage", {name: image.name})} onClick={() => setImages((current) => current.filter((_, itemIndex) => itemIndex !== index))}>×</button></div>)}</div> : null}</div>
+          </ProductEditSection>
+          <ProductEditSection enabled={isEditing} title={t("sections.status")}>
+            <label className="store-active-control"><input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} />{t("active")}</label>
+          </ProductEditSection>
         </div>
         {error ? <p className="error-message" role="alert">{error}</p> : null}
         <div className="store-form-actions">
@@ -170,5 +178,55 @@ export function ProductForm({storeId: initialStoreId, productId}: ProductFormPro
 }
 
 function Field({field, error, label, value, onChange, type = "text", textarea, dir, className}: {field: string; error?: string; label: string; value: string; onChange: (value: string) => void; type?: string; textarea?: boolean; dir?: "rtl"; className?: string}) {
-  return <div className={`field${className ? ` ${className}` : ""}`} data-field={field}><label>{label}</label>{textarea ? <textarea value={value} dir={dir} onChange={(event) => onChange(event.target.value)} /> : <input type={type} value={value} dir={dir} min={type === "number" ? "0.01" : undefined} step={type === "number" ? "0.01" : undefined} onChange={(event) => onChange(event.target.value)} />}{error ? <p className="field-error">{error}</p> : null}</div>;
+  return <div className={`field${className ? ` ${className}` : ""}`} data-field={field}><label>{label}</label>{textarea ? <textarea value={value} dir={dir ?? "auto"} onChange={(event) => onChange(event.target.value)} /> : <input type={type} value={value} dir={dir ?? "auto"} min={type === "number" ? "0.01" : undefined} step={type === "number" ? "0.01" : undefined} onChange={(event) => onChange(event.target.value)} />}{error ? <p className="field-error">{error}</p> : null}</div>;
+}
+
+function ProductEditSection({enabled, title, children}: {enabled: boolean; title: string; children: React.ReactNode}) {
+  if (!enabled) return <>{children}</>;
+
+  return (
+    <section className="store-form-section product-form-section">
+      <h2 className="form-section-title">{title}</h2>
+      <div className="store-form-grid product-form-section-grid">{children}</div>
+    </section>
+  );
+}
+
+function ProductFormSkeleton({label}: {label: string}) {
+  return (
+    <section className="store-form-panel product-form-skeleton" aria-busy="true" aria-label={label}>
+      <div className="store-form">
+        <div className="store-form-grid">
+          {Array.from({length: 5}, (_, index) => (
+            <FormFieldSkeleton key={index} />
+          ))}
+          <FormFieldSkeleton className="store-form-full product-form-skeleton-textarea" />
+          <FormFieldSkeleton className="store-form-full product-form-skeleton-textarea" />
+          <div className="field store-form-full product-form-skeleton-images">
+            <span className="skeleton product-form-skeleton-label" />
+            <span className="skeleton product-form-skeleton-upload" />
+            <div className="product-image-previews">
+              {Array.from({length: 3}, (_, index) => (
+                <span className="product-image-preview skeleton" key={index} />
+              ))}
+            </div>
+          </div>
+          <span className="skeleton product-form-skeleton-status" />
+        </div>
+        <div className="store-form-actions">
+          <span className="skeleton product-form-skeleton-action" />
+          <span className="skeleton product-form-skeleton-action primary" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FormFieldSkeleton({className}: {className?: string}) {
+  return (
+    <div className={`field product-form-skeleton-field${className ? ` ${className}` : ""}`}>
+      <span className="skeleton product-form-skeleton-label" />
+      <span className="skeleton product-form-skeleton-input" />
+    </div>
+  );
 }

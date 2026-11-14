@@ -5,7 +5,7 @@ import {ChevronDown} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {Link, usePathname} from "@/i18n/navigation";
 
-const MANAGEMENT_ITEMS = [
+export const MANAGEMENT_ITEMS = [
   {href: "/store-admins", label: "storeAdmins"},
   {href: "/categories", label: "categories"},
   {href: "/subcategories", label: "subcategories"},

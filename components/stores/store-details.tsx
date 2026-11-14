@@ -68,11 +68,7 @@ export function StoreDetails({id}: StoreDetailsProps) {
   if (isPending) {
     return (
       <section className="store-details-panel" aria-busy="true">
-        <div className="store-details-loading">
-          <span className="skeleton store-details-cover-skeleton" />
-          <span className="skeleton store-details-line wide" />
-          <span className="skeleton store-details-line" />
-        </div>
+        <StoreDetailsSkeleton />
       </section>
     );
   }
@@ -128,6 +124,7 @@ export function StoreDetails({id}: StoreDetailsProps) {
     store.location,
     store.location_ar,
   );
+  const phone = getNonEmptyString(store.phone);
   const productSummary = getSummaryCounts(summary?.products);
   const storeAdminAssignmentsSummary = getSummaryCounts(summary?.store_admin_assignments);
   const additionalLinks = Object.entries(store.social_links ?? {}).filter(
@@ -163,77 +160,94 @@ export function StoreDetails({id}: StoreDetailsProps) {
 
       {activeTab === "details" ? (
         <div id="store-details-panel" role="tabpanel" aria-labelledby="store-details-tab">
-      {isHttpUrl(store.cover_url) && (
-        // Store image URLs can be hosted on arbitrary backend-approved domains.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img className="store-details-cover" src={store.cover_url} alt={t("coverAlt", {name})} />
-      )}
-
-      <div className="store-details-profile">
-        {isHttpUrl(store.logo_url) ? (
-          // Store image URLs can be hosted on arbitrary backend-approved domains.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="store-details-logo" src={store.logo_url} alt={t("logoAlt", {name})} />
-        ) : (
-          <span className="store-details-logo store-details-logo-fallback" aria-hidden="true">
-            {name.charAt(0).toUpperCase()}
-          </span>
-        )}
-        <div>
-          <h2 id="store-details-name">{name}</h2>
-        </div>
-        <span className={`store-status ${store.is_active ? "active" : "inactive"}`}>
-          {store.is_active ? t("active") : t("inactive")}
-        </span>
-      </div>
-
-      <div className="store-details-grid">
-        <DetailItem label={t("name")} value={name} />
-        <DetailItem label={t("location")} value={location || t("notAvailable")} />
-        <DetailItem label={t("phone")} value={getNonEmptyString(store.phone) || t("notAvailable")} />
-        <UrlDetailItem label={t("logoUrl")} value={store.logo_url} fallback={t("notAvailable")} />
-        <UrlDetailItem label={t("coverUrl")} value={store.cover_url} fallback={t("notAvailable")} />
-        <DetailItem label={t("createdAt")} value={formatDate(store.created_at, t)} />
-        <DetailItem label={t("updatedAt")} value={formatDate(store.updated_at, t)} />
-        <DetailItem className="store-details-full" label={t("descriptionField")} value={description || t("notAvailable")} />
-      </div>
-
-      <section className="store-details-section" aria-labelledby="store-contact-title">
-        <h3 id="store-contact-title">{t("contactLinks")}</h3>
-        <div className="store-details-grid">
-          <UrlDetailItem label={t("whatsapp")} value={store.whatsapp_url} fallback={t("notAvailable")} />
-          <UrlDetailItem label={t("facebook")} value={store.facebook_url} fallback={t("notAvailable")} />
-          <UrlDetailItem label={t("instagram")} value={store.instagram_url} fallback={t("notAvailable")} />
-          <UrlDetailItem label={t("telegram")} value={store.telegram_url} fallback={t("notAvailable")} />
-        </div>
-      </section>
-
-      <section className="store-details-section" aria-labelledby="store-additional-links-title">
-        <h3 id="store-additional-links-title">{t("additionalLinks")}</h3>
-        {additionalLinks.length ? (
-          <div className="store-details-grid">
-            {additionalLinks.map(([label, url]) => (
-              <UrlDetailItem key={label} label={label} value={url} fallback={t("notAvailable")} />
-            ))}
-          </div>
-        ) : (
-          <p className="store-details-empty">{t("noAdditionalLinks")}</p>
-        )}
-      </section>
-
-      {(productSummary || storeAdminAssignmentsSummary) && (
-        <section className="store-details-section" aria-labelledby="store-summary-title">
-          <h3 id="store-summary-title">{t("summary")}</h3>
-          <div className="store-summary-grid">
-            {productSummary && (
-              <SummaryItem label={t("products")} total={productSummary.total} active={productSummary.active} t={t} />
+          <div className="store-details-hero">
+            {isHttpUrl(store.cover_url) && (
+              // Store image URLs can be hosted on arbitrary backend-approved domains.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="store-details-cover" src={store.cover_url} alt={t("coverAlt", {name})} />
             )}
-            {storeAdminAssignmentsSummary && (
-              <SummaryItem label={t("storeAdminAssignments")} total={storeAdminAssignmentsSummary.total} active={storeAdminAssignmentsSummary.active} t={t} />
+            <div className="store-details-profile">
+              <div className="store-details-identity">
+                {isHttpUrl(store.logo_url) ? (
+                  // Store image URLs can be hosted on arbitrary backend-approved domains.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="store-details-logo" src={store.logo_url} alt={t("logoAlt", {name})} />
+                ) : (
+                  <span className="store-details-logo store-details-logo-fallback" aria-hidden="true">
+                    {name.charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <div className="store-details-profile-copy">
+                  <h2 id="store-details-name" dir="auto">{name}</h2>
+                  <span className={`store-status store-details-status-wide ${store.is_active ? "active" : "inactive"}`}>
+                    {store.is_active ? t("active") : t("inactive")}
+                  </span>
+                </div>
+              </div>
+              <span className={`store-status store-details-status-mobile ${store.is_active ? "active" : "inactive"}`}>
+                {store.is_active ? t("active") : t("inactive")}
+              </span>
+              <div className="store-details-actions">
+                <Link className="primary-button" href={`/stores/${id}/edit`}>{t("editAction")}</Link>
+                <Link className="secondary-button" href="/stores">{t("backToStores")}</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="store-details-content">
+            <section className="store-details-section store-details-basic-section" aria-labelledby="store-basic-title">
+              <h3 id="store-basic-title">{t("basicInformation")}</h3>
+              <div className="store-details-info-grid">
+                <DetailItem label={t("name")} value={name} />
+                <DetailItem label={t("location")} value={location || t("notAvailable")} missing={!location} />
+                <DetailItem label={t("phone")} value={phone || t("notAvailable")} missing={!phone} direction={phone ? "ltr" : "auto"} />
+                <DetailItem label={t("createdAt")} value={formatDate(store.created_at, t)} />
+                <DetailItem label={t("updatedAt")} value={formatDate(store.updated_at, t)} />
+              </div>
+            </section>
+
+            <section className="store-details-section store-details-description-section" aria-labelledby="store-description-title">
+              <h3 id="store-description-title">{t("descriptionField")}</h3>
+              <p className={`store-details-description${description ? "" : " is-missing"}`} dir="auto">
+                {description || t("notAvailable")}
+              </p>
+            </section>
+
+            <section className="store-details-section" aria-labelledby="store-images-title">
+              <h3 id="store-images-title">{t("images")}</h3>
+              <div className="store-images-grid">
+                <StoreImageItem kind="logo" title={t("logo")} urlLabel={t("logoUrl")} value={store.logo_url} alt={t("logoAlt", {name})} missingText={t("logoUnavailable")} fallback={t("notAvailable")} />
+                <StoreImageItem kind="cover" title={t("coverImage")} urlLabel={t("coverUrl")} value={store.cover_url} alt={t("coverAlt", {name})} missingText={t("coverImageUnavailable")} fallback={t("notAvailable")} />
+              </div>
+            </section>
+
+            <section className="store-details-section" aria-labelledby="store-contact-title">
+              <h3 id="store-contact-title">{t("contactLinks")}</h3>
+              <div className="store-contact-grid">
+                <UrlDetailItem label={t("whatsapp")} value={store.whatsapp_url} fallback={t("notAvailable")} />
+                <UrlDetailItem label={t("facebook")} value={store.facebook_url} fallback={t("notAvailable")} />
+                <UrlDetailItem label={t("instagram")} value={store.instagram_url} fallback={t("notAvailable")} />
+                <UrlDetailItem label={t("telegram")} value={store.telegram_url} fallback={t("notAvailable")} />
+                {additionalLinks.length ? additionalLinks.map(([label, url]) => (
+                  <UrlDetailItem key={label} label={label} value={url} fallback={t("notAvailable")} />
+                )) : <DetailItem label={t("additionalLinks")} value={t("notAvailable")} missing />}
+              </div>
+            </section>
+
+            {(productSummary || storeAdminAssignmentsSummary) && (
+              <section className="store-details-section store-details-summary-section" aria-labelledby="store-summary-title">
+                <h3 id="store-summary-title">{t("summary")}</h3>
+                <div className="store-summary-grid">
+                  {productSummary && (
+                    <SummaryItem label={t("products")} total={productSummary.total} active={productSummary.active} t={t} />
+                  )}
+                  {storeAdminAssignmentsSummary && (
+                    <SummaryItem label={t("storeAdminAssignments")} total={storeAdminAssignmentsSummary.total} active={storeAdminAssignmentsSummary.active} t={t} />
+                  )}
+                </div>
+              </section>
             )}
           </div>
-        </section>
-      )}
         </div>
       ) : (
         <div id="store-products-panel" role="tabpanel" aria-labelledby="store-products-tab">
@@ -241,6 +255,28 @@ export function StoreDetails({id}: StoreDetailsProps) {
         </div>
       )}
     </section>
+  );
+}
+
+function StoreDetailsSkeleton() {
+  return (
+    <div className="store-details-loading">
+      <div className="store-details-skeleton-tabs">
+        <span className="skeleton" />
+        <span className="skeleton" />
+      </div>
+      <span className="skeleton store-details-cover-skeleton" />
+      <div className="store-details-skeleton-profile">
+        <span className="skeleton store-details-logo-skeleton" />
+        <span className="skeleton store-details-line wide" />
+        <span className="skeleton store-details-status-skeleton" />
+      </div>
+      <div className="store-details-skeleton-grid">
+        {Array.from({length: 6}, (_, index) => (
+          <span className="skeleton store-details-skeleton-item" key={index} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -256,14 +292,46 @@ interface DetailItemProps {
   label: string;
   value: string;
   className?: string;
+  missing?: boolean;
+  direction?: "auto" | "ltr";
 }
 
-function DetailItem({label, value, className}: DetailItemProps) {
+function DetailItem({label, value, className, missing = false, direction = "auto"}: DetailItemProps) {
   return (
-    <div className={`store-details-item${className ? ` ${className}` : ""}`}>
+    <div className={`store-details-item${missing ? " is-missing" : ""}${className ? ` ${className}` : ""}`}>
       <span>{label}</span>
-      <strong>{value}</strong>
+      <strong dir={direction}>{value}</strong>
     </div>
+  );
+}
+
+interface StoreImageItemProps {
+  kind: "logo" | "cover";
+  title: string;
+  urlLabel: string;
+  value: string | null;
+  alt: string;
+  missingText: string;
+  fallback: string;
+}
+
+function StoreImageItem({kind, title, urlLabel, value, alt, missingText, fallback}: StoreImageItemProps) {
+  const hasImage = isHttpUrl(value);
+
+  return (
+    <article className={`store-image-item ${kind}${hasImage ? "" : " is-missing"}`}>
+      {hasImage ? (
+        <>
+          <h4>{title}</h4>
+          {/* Store image URLs can be hosted on arbitrary backend-approved domains. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt={alt} />
+          <UrlDetailItem label={urlLabel} value={value} fallback={fallback} />
+        </>
+      ) : (
+        <p className="store-image-unavailable">{missingText}</p>
+      )}
+    </article>
   );
 }
 

@@ -19,6 +19,7 @@ export default async function StoreEditPage({params}: StoreEditPageProps) {
   return (
     <DashboardShell>
       <PageHeader
+        className="store-edit-page-header"
         eyebrow={t("eyebrow")}
         title={t("title")}
         description={t("description")}

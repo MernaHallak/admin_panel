@@ -45,13 +45,13 @@
     "stores": "Stores",
     "products": "Products",
     "management": "Management",
-    "storeAdmins": "Store Admins", "categories": "Categories", "subcategories": "Subcategories"
+    "storeAdmins": "Store Admins", "categories": "Categories", "subcategories": "Subcategories", "openNavigation": "Open navigation", "closeNavigation": "Close navigation"
   },
-  "Subcategories": {"eyebrow":"Catalog management","title":"Subcategories","description":"Review and manage product subcategories.","tableTitle":"Subcategory directory","add":"Add Subcategory","loading":"Loading subcategories…","results":"{count} subcategories","empty":"No subcategories are available.","name":"Name","nameAr":"Name (Arabic)","category":"Category","selectCategory":"Select category","categoryRequired":"Select a category.","nameRequired":"Enter a subcategory name.","status":"Status","active":"Active","inactive":"Inactive","actions":"Actions","view":"View subcategory details","edit":"Edit subcategory","delete":"Delete subcategory","deleteTitle":"Delete subcategory?","deleteMessage":"This action cannot be undone.","confirmDelete":"Delete subcategory","deleting":"Deleting…","cancel":"Cancel","loadError":"We could not load subcategories.","createTitle":"Add Subcategory","save":"Save changes","saving":"Saving…","create":"Create subcategory"},
+  "Subcategories": {"eyebrow":"Catalog management","title":"Subcategories","description":"Review and manage product subcategories.","tableTitle":"Subcategory directory","add":"Add Subcategory","searchPlaceholder":"Search subcategories","loading":"Loading subcategories…","results":"{count} subcategories","empty":"No subcategories are available.","name":"Name","nameAr":"Name (Arabic)","category":"Category","selectCategory":"Select category","categoryRequired":"Select a category.","nameRequired":"Enter a subcategory name.","status":"Status","active":"Active","inactive":"Inactive","actions":"Actions","view":"View subcategory details","edit":"Edit subcategory","delete":"Delete subcategory","deleteTitle":"Delete subcategory?","deleteMessage":"This action cannot be undone.","confirmDelete":"Delete subcategory","deleting":"Deleting…","cancel":"Cancel","loadError":"We could not load subcategories.","createTitle":"Add Subcategory","save":"Save changes","saving":"Saving…","create":"Create subcategory"},
   "SubcategoryDetails": {"detailsTitle":"Subcategory Details","editTitle":"Edit Subcategory","detailsDescription":"Review this subcategory.","editDescription":"Update this subcategory.","details":"Subcategory information","description":"Description","descriptionAr":"Description (Arabic)","createdAt":"Created","updatedAt":"Updated","notAvailable":"Not available","unnamed":"Unnamed subcategory","editAction":"Edit subcategory","loadError":"We could not load this subcategory.","sessionExpired":"Your session has expired. Please sign in again.","notFound":"This subcategory is unavailable or no longer exists.","backToSubcategories":"Back to subcategories","save":"Save changes","saving":"Saving…","fieldRequired":"Enter a value."},
   "TaxonomyList": {"statusFilter":"Filter by status","sortFilter":"Sort","all":"All","newest":"Newest","oldest":"Oldest","nameAsc":"Name A–Z","nameDesc":"Name Z–A","allCategories":"All categories","reset":"Reset filters","previous":"Previous","next":"Next","page":"Page {page} of {total}","noMatches":"No matching results."},
   "Categories": {
-    "eyebrow": "Catalog management", "title": "Categories", "description": "Review and manage product categories.", "tableTitle": "Category directory", "add": "Add Category", "loading": "Loading categories…", "results": "{count, plural, =0 {No categories found} one {# category found} other {# categories found}}", "empty": "No categories are available.", "name": "Name", "nameAr": "Name (Arabic)", "description": "Description", "descriptionAr": "Description (Arabic)", "slug": "Slug", "status": "Status", "active": "Active", "inactive": "Inactive", "actions": "Actions", "view": "View category details", "edit": "Edit category", "delete": "Delete category", "deleteTitle": "Delete category?", "deleteMessage": "This action cannot be undone.", "confirmDelete": "Delete category", "deleting": "Deleting…", "cancel": "Cancel", "loadError": "We could not load categories.", "sessionExpired": "Your session has expired. Please sign in again.", "unnamed": "Unnamed category", "notAvailable": "Not available", "createTitle": "Add Category", "editTitle": "Edit Category", "detailsTitle": "Category details", "createDescription": "Create a product category.", "editDescription": "Update this product category.", "detailsDescription": "Review the category details.", "details": "Category information", "create": "Create category", "save": "Save changes", "saving": "Saving…", "nameRequired": "Enter a category name.", "nameArRequired": "Enter the Arabic category name.", "pairedRequired": "Enter both language values together."
+    "eyebrow": "Catalog management", "title": "Categories", "description": "Review and manage product categories.", "tableTitle": "Category directory", "add": "Add Category", "searchPlaceholder": "Search categories", "loading": "Loading categories…", "results": "{count, plural, =0 {No categories found} one {# category found} other {# categories found}}", "empty": "No categories are available.", "name": "Name", "nameAr": "Name (Arabic)", "description": "Description", "descriptionAr": "Description (Arabic)", "slug": "Slug", "status": "Status", "active": "Active", "inactive": "Inactive", "actions": "Actions", "view": "View category details", "edit": "Edit category", "delete": "Delete category", "deleteTitle": "Delete category?", "deleteMessage": "This action cannot be undone.", "confirmDelete": "Delete category", "deleting": "Deleting…", "cancel": "Cancel", "loadError": "We could not load categories.", "sessionExpired": "Your session has expired. Please sign in again.", "unnamed": "Unnamed category", "notAvailable": "Not available", "createTitle": "Add Category", "editTitle": "Edit Category", "detailsTitle": "Category details", "createDescription": "Create a product category.", "editDescription": "Update this product category.", "detailsDescription": "Review the category details.", "details": "Category information", "create": "Create category", "save": "Save changes", "saving": "Saving…", "nameRequired": "Enter a category name.", "nameArRequired": "Enter the Arabic category name.", "pairedRequired": "Enter both language values together."
   },
   "StoreAdmins": {
     "eyebrow": "Platform access",
@@ -62,9 +62,11 @@
     "loading": "Loading Store Admins…",
     "unableToLoad": "Unable to load Store Admins",
     "results": "{count, plural, =0 {No assignments found} one {# assignment found} other {# assignments found}}",
-    "empty": "No Store Admin assignments match the current filters.",
+    "empty": "No Store Admin assignments are available.",
+    "noResults": "No Store Admin assignments match the current filters.",
     "refreshing": "Refreshing Store Admins",
     "searchPlaceholder": "Search name or email",
+    "filters": "Filters",
     "storeFilter": "Filter by Store",
     "allStores": "All Stores",
     "statusFilter": "Filter by assignment status",
@@ -122,6 +124,9 @@
     "noChanges": "There are no changes to save.",
     "assignment": "Assignment",
     "account": "Account",
+    "identity": "Identity",
+    "accountInformation": "Account information",
+    "statusOverview": "Status overview",
     "backToList": "Back to Store Admins",
     "notFoundTitle": "Store Admin assignment not found",
     "notFound": "This Store Admin assignment is unavailable or no longer exists.",
@@ -276,6 +281,12 @@
       "name": "Store name",
       "location": "Location",
       "phone": "Phone",
+      "basicInformation": "Basic information",
+      "images": "Images",
+      "logo": "Logo",
+      "coverImage": "Cover image",
+      "logoUnavailable": "Logo: Not available",
+      "coverImageUnavailable": "Cover image: Not available",
       "logoUrl": "Logo URL",
       "coverUrl": "Cover image URL",
       "descriptionField": "Description",
@@ -380,6 +391,12 @@
       "productForm": {
         "createTitle": "Add product",
         "editTitle": "Edit product",
+        "sections": {
+          "basic": "Basic information",
+          "description": "Description",
+          "images": "Images",
+          "status": "Status"
+        },
         "store": "Store",
         "selectStore": "Select store",
         "storeRequired": "Select a store.",
@@ -490,6 +507,14 @@
       "telegramUrl": "Telegram URL",
       "socialLinks": "Additional links",
       "socialLinksHint": "Add each additional link separately.",
+      "sections": {
+        "basic": "Basic information",
+        "description": "Description",
+        "location": "Location",
+        "contact": "Contact information",
+        "media": "Logo and cover",
+        "links": "Social and additional links"
+      },
       "linkName": "Link name",
       "linkUrl": "URL",
       "addAdditionalLink": "Add link",

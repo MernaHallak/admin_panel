@@ -45,7 +45,7 @@ export function ProductDetails({id}: ProductDetailsProps) {
   const normalizedError = isError ? normalizeApiError(error) : undefined;
 
   if (isPending) {
-    return <section className="product-details-panel" aria-busy="true"><div className="table-state">{common("loading")}</div></section>;
+    return <ProductDetailsSkeleton label={common("loading")} />;
   }
 
   if (isError || !data) {
@@ -152,4 +152,51 @@ interface DetailItemProps {
 
 function DetailItem({label, value, className}: DetailItemProps) {
   return <div className={`product-details-item${className ? ` ${className}` : ""}`}><span>{label}</span><strong dir="auto">{value}</strong></div>;
+}
+
+function ProductDetailsSkeleton({label}: {label: string}) {
+  return (
+    <section className="product-details-panel product-details-skeleton" aria-busy="true" aria-label={label}>
+      <header className="product-details-header">
+        <div className="product-details-identity">
+          <span className="skeleton product-details-skeleton-name" />
+          <div className="product-details-status">
+            <span className="skeleton product-details-skeleton-status-label" />
+            <span className="skeleton product-details-skeleton-status" />
+          </div>
+        </div>
+        <span className="skeleton product-details-skeleton-button" />
+      </header>
+
+      <section className="product-details-section">
+        <span className="skeleton product-details-skeleton-section-title" />
+        <div className="product-details-grid">
+          {Array.from({length: 6}, (_, index) => (
+            <div className="product-details-item product-details-skeleton-item" key={index}>
+              <span className="skeleton product-details-skeleton-label" />
+              <span className="skeleton product-details-skeleton-value" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="product-details-section">
+        <span className="skeleton product-details-skeleton-section-title" />
+        <div className="product-details-description product-details-skeleton-description">
+          <span className="skeleton product-details-skeleton-description-line" />
+          <span className="skeleton product-details-skeleton-description-line short" />
+          <span className="skeleton product-details-skeleton-description-line" />
+        </div>
+      </section>
+
+      <section className="product-details-section">
+        <span className="skeleton product-details-skeleton-section-title" />
+        <div className="product-details-image-grid">
+          {Array.from({length: 3}, (_, index) => (
+            <span className="product-details-image skeleton" key={index} />
+          ))}
+        </div>
+      </section>
+    </section>
+  );
 }

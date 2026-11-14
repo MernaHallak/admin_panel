@@ -10,6 +10,7 @@ import type {SupportedLocale} from "@/i18n/routing";
 import {Link, useRouter} from "@/i18n/navigation";
 import {normalizeApiError} from "@/lib/api-error";
 import {getLocalizedValue} from "@/lib/i18n/get-localized-value";
+import {MobileRowActions} from "@/components/mobile-row-actions";
 
 const TABLE_COLUMN_COUNT = 7;
 const PAGE_LIMIT = 20;
@@ -133,14 +134,14 @@ export function StoreProductsList({storeId}: StoreProductsListProps) {
       </div>
       {actionError ? <p className="store-products-action-error" role="alert">{actionError}</p> : null}
 
-      <div className="table-scroll">
+      <div className="table-scroll desktop-list-table">
         <table className="stores-table store-products-table">
           <thead>
             <tr>
-              <th scope="col">{t("product")}</th>
+              <th className="store-products-name-column" scope="col">{t("product")}</th>
               <th scope="col">{t("category")}</th>
               <th scope="col">{t("subcategory")}</th>
-              <th scope="col">{t("price")}</th>
+              <th className="store-products-price-column" scope="col">{t("price")}</th>
               <th scope="col">{t("actions")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("updated")}</th>
@@ -189,11 +190,6 @@ export function StoreProductsList({storeId}: StoreProductsListProps) {
                 locale,
                 fallback: product.name,
               }) || t("unnamedProduct");
-              const description = getLocalizedValue({
-                localized: product.description_i18n,
-                locale,
-                fallback: product.description,
-              });
               const category = getLocalizedValue({
                 localized: product.category_i18n,
                 locale,
@@ -207,15 +203,14 @@ export function StoreProductsList({storeId}: StoreProductsListProps) {
 
               return (
                 <tr key={product.id} className="table-navigation-row" tabIndex={0} aria-label={t("viewProduct")} onClick={(event: MouseEvent<HTMLTableRowElement>) => { if (!isInteractiveTarget(event.target)) openProduct(product.id); }} onKeyDown={(event) => handleRowKeyDown(event, product.id)}>
-                  <td>
+                  <td className="store-products-name-column">
                     <div className="store-product-copy">
-                      <Link className="store-name-link" href={`/products/${product.id}`} onClick={(event) => event.stopPropagation()}><strong>{name}</strong></Link>
-                      <span>{description || t("noDescription")}</span>
+                      <Link className="store-name-link" href={`/products/${product.id}`} title={name} onClick={(event) => event.stopPropagation()}><strong>{name}</strong></Link>
                     </div>
                   </td>
                   <td>{category}</td>
                   <td>{subcategory || "—"}</td>
-                  <td className="numeric-cell">{formatPrice(product.price, locale)}</td>
+                  <td className="store-products-price-column numeric-cell"><span className="table-price-full"><bdi>{formatPrice(product.price, locale)}</bdi></span><span className="table-price-compact"><bdi>{formatCompactPrice(product.price)}</bdi></span></td>
                   <td>
                     <div className="table-actions">
                       <button className="table-view-action" type="button" aria-label={t("viewProduct")} title={t("viewProduct")} onClick={(event) => { event.stopPropagation(); openProduct(product.id); }} onKeyDown={(event) => event.stopPropagation()}>
@@ -249,6 +244,23 @@ export function StoreProductsList({storeId}: StoreProductsListProps) {
             })}
           </tbody>
         </table>
+      </div>
+
+      <div className="mobile-list" aria-label={t("title")}>
+        {isPending ? <MobileStoreProductSkeletons label={t("loading")} /> : null}
+        {isError ? <div className="mobile-list-state" role="alert"><strong>{t("loadError")}</strong><p>{normalizedError?.status === 401 ? t("sessionExpired") : normalizedError?.status === 403 ? common("forbidden") : common(normalizedError?.translationKey ?? "unexpectedError")}</p>{normalizedError?.status === 401 ? <button className="secondary-button" type="button" onClick={() => router.replace("/login")}>{common("login")}</button> : normalizedError?.status !== 403 ? <button className="secondary-button" type="button" onClick={() => refetch()}>{common("retry")}</button> : null}</div> : null}
+        {!isPending && !isError && !data?.data.length ? <div className="mobile-list-state"><p>{t("empty")}</p></div> : null}
+        {!isPending && !isError ? data?.data.map((product) => {
+          const name = getLocalizedValue({localized: product.name_i18n, locale, fallback: product.name}) || t("unnamedProduct");
+          const category = getLocalizedValue({localized: product.category_i18n, locale, fallback: product.category}) || t("unknownCategory");
+          const subcategory = getLocalizedValue({localized: product.subcategory_i18n, locale, fallback: product.subcategory});
+          const isUpdating = updatingProductId === product.id;
+          return <article key={product.id} className="mobile-list-card mobile-product-card" tabIndex={0} role="link" aria-label={t("viewProduct")} onClick={() => openProduct(product.id)} onKeyDown={(event) => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openProduct(product.id); } }}>
+            <div className="mobile-list-card-header"><Link className="mobile-list-title" href={`/products/${product.id}`} title={name} onClick={(event) => event.stopPropagation()}><strong dir="auto">{name}</strong></Link><MobileRowActions label={t("actions")} actions={[{label: t("viewProduct"), onSelect: () => openProduct(product.id)}, {label: t("editProduct"), onSelect: () => router.push({pathname: `/products/${product.id}/edit`, query: {storeId}})}, {label: product.is_active ? t("deactivateProduct") : t("activateProduct"), onSelect: () => { void toggleStatus(product); }, disabled: Boolean(updatingProductId)}, {label: t("deleteProduct"), onSelect: () => setProductToDelete({id: product.id, name}), destructive: true, disabled: deleteProductMutation.isPending}]} /></div>
+            <p className="mobile-list-meta" dir="auto">{category}</p>{subcategory ? <p className="mobile-list-detail" dir="auto">{subcategory}</p> : null}
+            <div className="mobile-list-card-footer"><strong className="mobile-list-price">{formatCompactPrice(product.price)}</strong><button className={`store-status store-status-control ${product.is_active ? "active" : "inactive"}`} type="button" disabled={isUpdating} aria-busy={isUpdating} aria-label={product.is_active ? t("deactivateProduct") : t("activateProduct")} onClick={(event) => { event.stopPropagation(); void toggleStatus(product); }}>{isUpdating ? <span className="spinner dark" aria-label={t("updatingStatus")} /> : product.is_active ? t("active") : t("inactive")}</button></div>
+          </article>;
+        }) : null}
       </div>
 
       {data && data.pagination.total_pages > 1 ? (
@@ -300,6 +312,13 @@ function formatPrice(value: number, locale: SupportedLocale) {
   }).format(value);
 }
 
+function formatCompactPrice(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+}
+
 function formatDate(value: string, t: ReturnType<typeof useTranslations>) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return t("notAvailable");
@@ -322,4 +341,8 @@ function TableLoadingRows({label}: {label: string}) {
       ))}
     </>
   );
+}
+
+function MobileStoreProductSkeletons({label}: {label: string}) {
+  return <>{[0, 1, 2, 3].map((row) => <div className="mobile-list-card mobile-list-skeleton" key={row} aria-label={label}><span className="skeleton mobile-list-skeleton-title" /><span className="skeleton mobile-list-skeleton-line" /><span className="skeleton mobile-list-skeleton-footer" /></div>)}</>;
 }

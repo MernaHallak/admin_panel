@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState, type FormEvent} from "react";
+import {useEffect, useRef, useState, type FormEvent, type ReactNode} from "react";
 import {useTranslations} from "next-intl";
 
 import {useUpdateStore} from "@/hook/mutations/use-update-store";
@@ -425,39 +425,48 @@ export function StoreEditForm({id}: StoreEditFormProps) {
   if (isPending || !initialValues) {
     return (
       <section className="store-form-panel" aria-busy="true">
-        <div className="store-details-loading">
-          <span className="skeleton store-details-line wide" />
-          <span className="skeleton store-details-line" />
-          <span className="skeleton store-details-line" />
-        </div>
+        <StoreFormSkeleton />
       </section>
     );
   }
 
   return (
-    <section className="store-form-panel" aria-labelledby="store-edit-form-title">
-      <form className="store-form" noValidate onSubmit={handleSubmit}>
+    <section className="store-form-panel store-edit-form-panel" aria-labelledby="store-edit-form-title">
+      <form className="store-form store-edit-form" noValidate onSubmit={handleSubmit}>
         <h2 className="sr-only" id="store-edit-form-title">{t("title")}</h2>
-        <div className="store-form-grid">
-          <TextField id="name" field="name" label={createT("name")} value={values.name} error={fieldErrors.name} onChange={(value) => setValue("name", value)} required />
-          <TextField id="phone" field="phone" label={createT("phone")} value={values.phone} error={fieldErrors.phone} onChange={(value) => setValue("phone", value)} />
-          <TextAreaField id="description" field="description" label={createT("descriptionField")} value={values.description} error={fieldErrors.description} onChange={(value) => setValue("description", value)} />
-          <TextAreaField id="description-ar" field="description_ar" label={createT("descriptionAr")} value={values.descriptionAr} error={fieldErrors.description_ar} dir="rtl" onChange={(value) => setValue("descriptionAr", value)} />
-          <TextField id="location" field="location" label={createT("location")} value={values.location} error={fieldErrors.location} onChange={(value) => setValue("location", value)} />
-          <TextField id="location-ar" field="location_ar" label={createT("locationAr")} value={values.locationAr} error={fieldErrors.location_ar} dir="rtl" onChange={(value) => setValue("locationAr", value)} />
-          <TextField id="logo-url" field="logo_url" label={createT("logoUrl")} value={values.logoUrl} error={fieldErrors.logo_url} type="url" onChange={(value) => setValue("logoUrl", value)} />
-          <TextField id="cover-url" field="cover_url" label={createT("coverUrl")} value={values.coverUrl} error={fieldErrors.cover_url} type="url" onChange={(value) => setValue("coverUrl", value)} />
-          <TextField id="whatsapp-url" field="whatsapp_url" label={createT("whatsappUrl")} value={values.whatsAppUrl} error={fieldErrors.whatsapp_url} type="url" onChange={(value) => setValue("whatsAppUrl", value)} />
-          <TextField id="facebook-url" field="facebook_url" label={createT("facebookUrl")} value={values.facebookUrl} error={fieldErrors.facebook_url} type="url" onChange={(value) => setValue("facebookUrl", value)} />
-          <TextField id="instagram-url" field="instagram_url" label={createT("instagramUrl")} value={values.instagramUrl} error={fieldErrors.instagram_url} type="url" onChange={(value) => setValue("instagramUrl", value)} />
-          <TextField id="telegram-url" field="telegram_url" label={createT("telegramUrl")} value={values.telegramUrl} error={fieldErrors.telegram_url} type="url" onChange={(value) => setValue("telegramUrl", value)} />
+        <div className="store-form-sections">
+          <StoreFormSection title={createT("sections.basic")} className="store-form-section-basic">
+            <TextField id="name" field="name" label={createT("name")} value={values.name} error={fieldErrors.name} onChange={(value) => setValue("name", value)} required />
+          </StoreFormSection>
+          <StoreFormSection title={createT("sections.description")} className="store-form-section-description">
+            <TextAreaField id="description" field="description" label={createT("descriptionField")} value={values.description} error={fieldErrors.description} onChange={(value) => setValue("description", value)} />
+            <TextAreaField id="description-ar" field="description_ar" label={createT("descriptionAr")} value={values.descriptionAr} error={fieldErrors.description_ar} dir="rtl" onChange={(value) => setValue("descriptionAr", value)} />
+          </StoreFormSection>
+          <StoreFormSection title={createT("sections.location")} className="store-form-section-location">
+            <TextField id="location" field="location" label={createT("location")} value={values.location} error={fieldErrors.location} onChange={(value) => setValue("location", value)} />
+            <TextField id="location-ar" field="location_ar" label={createT("locationAr")} value={values.locationAr} error={fieldErrors.location_ar} dir="rtl" onChange={(value) => setValue("locationAr", value)} />
+          </StoreFormSection>
+          <StoreFormSection title={createT("sections.contact")} className="store-form-section-contact">
+            <TextField id="phone" field="phone" label={createT("phone")} value={values.phone} error={fieldErrors.phone} onChange={(value) => setValue("phone", value)} />
+            <TextField id="whatsapp-url" field="whatsapp_url" label={createT("whatsappUrl")} value={values.whatsAppUrl} error={fieldErrors.whatsapp_url} type="url" onChange={(value) => setValue("whatsAppUrl", value)} />
+            <TextField id="facebook-url" field="facebook_url" label={createT("facebookUrl")} value={values.facebookUrl} error={fieldErrors.facebook_url} type="url" onChange={(value) => setValue("facebookUrl", value)} />
+            <TextField id="instagram-url" field="instagram_url" label={createT("instagramUrl")} value={values.instagramUrl} error={fieldErrors.instagram_url} type="url" onChange={(value) => setValue("instagramUrl", value)} />
+            <TextField id="telegram-url" field="telegram_url" label={createT("telegramUrl")} value={values.telegramUrl} error={fieldErrors.telegram_url} type="url" onChange={(value) => setValue("telegramUrl", value)} />
+          </StoreFormSection>
+          <StoreFormSection title={createT("sections.media")} className="store-form-section-media">
+            <TextField id="logo-url" field="logo_url" label={createT("logoUrl")} value={values.logoUrl} error={fieldErrors.logo_url} type="url" onChange={(value) => setValue("logoUrl", value)} />
+            <TextField id="cover-url" field="cover_url" label={createT("coverUrl")} value={values.coverUrl} error={fieldErrors.cover_url} type="url" onChange={(value) => setValue("coverUrl", value)} />
+          </StoreFormSection>
+          <StoreFormSection title={t("status")} className="store-form-section-status">
           <div className="field store-form-full" data-field="is_active">
-            <span>{t("status")}</span>
+            <span className="sr-only">{t("status")}</span>
             <label className="store-active-control">
               <input type="checkbox" checked={values.isActive} onChange={(event) => setValue("isActive", event.target.checked)} />
               {values.isActive ? t("active") : t("inactive")}
             </label>
           </div>
+          </StoreFormSection>
+          <StoreFormSection title={createT("sections.links")} full className="store-form-section-links">
           <div className="field store-form-full" data-field="social_links">
             <label>{createT("socialLinks")}</label>
             <p className="field-hint">{createT("socialLinksHint")}</p>
@@ -465,12 +474,12 @@ export function StoreEditForm({id}: StoreEditFormProps) {
               <div className="additional-link-row" key={link.id}>
                 <div className="additional-link-control" data-field={getAdditionalLinkField(link.id, "name")}>
                   <label htmlFor={`${link.id}-name`}>{createT("linkName")}</label>
-                  <input id={`${link.id}-name`} type="text" value={link.name} onChange={(event) => updateAdditionalLink(link.id, "name", event.target.value)} />
+                  <input id={`${link.id}-name`} type="text" value={link.name} aria-invalid={Boolean(fieldErrors[getAdditionalLinkField(link.id, "name")])} onChange={(event) => updateAdditionalLink(link.id, "name", event.target.value)} />
                   {fieldErrors[getAdditionalLinkField(link.id, "name")] && <p className="field-error">{fieldErrors[getAdditionalLinkField(link.id, "name")]}</p>}
                 </div>
                 <div className="additional-link-control" data-field={getAdditionalLinkField(link.id, "url")}>
                   <label htmlFor={`${link.id}-url`}>{createT("linkUrl")}</label>
-                  <input id={`${link.id}-url`} type="url" value={link.url} onChange={(event) => updateAdditionalLink(link.id, "url", event.target.value)} />
+                  <input id={`${link.id}-url`} type="url" dir="ltr" value={link.url} aria-invalid={Boolean(fieldErrors[getAdditionalLinkField(link.id, "url")])} onChange={(event) => updateAdditionalLink(link.id, "url", event.target.value)} />
                   {fieldErrors[getAdditionalLinkField(link.id, "url")] && <p className="field-error">{fieldErrors[getAdditionalLinkField(link.id, "url")]}</p>}
                 </div>
                 <button className="secondary-button" type="button" onClick={() => removeAdditionalLink(link.id)} aria-label={createT("removeAdditionalLink", {number: index + 1})}>
@@ -483,6 +492,7 @@ export function StoreEditForm({id}: StoreEditFormProps) {
             </button>
             {fieldErrors.social_links && <p className="field-error">{fieldErrors.social_links}</p>}
           </div>
+          </StoreFormSection>
         </div>
 
         {formError && <p className="error-message" role="alert">{formError}</p>}
@@ -497,6 +507,30 @@ export function StoreEditForm({id}: StoreEditFormProps) {
           </button>
         </div>
       </form>
+    </section>
+  );
+}
+
+function StoreFormSkeleton() {
+  return (
+    <div className="store-form-skeleton">
+      <span className="skeleton store-details-line wide" />
+      {["basic", "description", "contact"].map((section) => (
+        <div className="store-form-skeleton-section" key={section}>
+          <span className="skeleton store-form-skeleton-title" />
+          <span className="skeleton store-form-skeleton-input" />
+          <span className="skeleton store-form-skeleton-input" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StoreFormSection({title, children, full = false, className}: {title: string; children: ReactNode; full?: boolean; className?: string}) {
+  return (
+    <section className={`store-form-section${full ? " store-form-section-full" : ""}${className ? ` ${className}` : ""}`}>
+      <h3 className="form-section-title">{title}</h3>
+      <div className="store-form-grid">{children}</div>
     </section>
   );
 }
@@ -517,7 +551,7 @@ function TextField({id, field, label, value, error, type = "text", dir, required
   return (
     <div className="field" data-field={field}>
       <label htmlFor={id}>{label}</label>
-      <input id={id} type={type} dir={dir} value={value} required={required} onChange={(event) => onChange(event.target.value)} />
+      <input id={id} type={type} dir={dir ?? (type === "url" ? "ltr" : "auto")} value={value} required={required} aria-invalid={Boolean(error)} onChange={(event) => onChange(event.target.value)} />
       {error && <p className="field-error">{error}</p>}
     </div>
   );
@@ -537,7 +571,7 @@ function TextAreaField({id, field, label, value, error, dir, onChange}: TextArea
   return (
     <div className="field store-form-full" data-field={field}>
       <label htmlFor={id}>{label}</label>
-      <textarea id={id} rows={4} dir={dir} value={value} onChange={(event) => onChange(event.target.value)} />
+      <textarea id={id} rows={4} dir={dir ?? "auto"} value={value} aria-invalid={Boolean(error)} onChange={(event) => onChange(event.target.value)} />
       {error && <p className="field-error">{error}</p>}
     </div>
   );

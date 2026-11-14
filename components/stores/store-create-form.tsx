@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useState, type FormEvent} from "react";
+import {useRef, useState, type FormEvent, type ReactNode} from "react";
 import {useTranslations} from "next-intl";
 
 import {useCreateStore} from "@/hook/mutations/use-create-store";
@@ -257,19 +257,30 @@ export function StoreCreateForm() {
     <section className="store-form-panel" aria-labelledby="store-create-form-title">
       <form className="store-form" noValidate onSubmit={handleSubmit}>
         <h2 className="sr-only" id="store-create-form-title">{t("title")}</h2>
-        <div className="store-form-grid">
-          <TextField id="name" field="name" label={t("name")} value={name} error={fieldErrors.name} onChange={(value) => { setName(value); clearFieldError("name"); }} required />
-          <TextField id="phone" field="phone" label={t("phone")} value={phone} error={fieldErrors.phone} onChange={(value) => { setPhone(value); clearFieldError("phone"); }} />
-          <TextAreaField id="description" field="description" label={t("descriptionField")} value={description} error={fieldErrors.description} onChange={(value) => { setDescription(value); clearFieldError("description"); }} />
-          <TextAreaField id="description-ar" field="description_ar" label={t("descriptionAr")} value={descriptionAr} error={fieldErrors.description_ar} dir="rtl" onChange={(value) => { setDescriptionAr(value); clearFieldError("description_ar"); }} />
-          <TextField id="location" field="location" label={t("location")} value={location} error={fieldErrors.location} onChange={(value) => { setLocation(value); clearFieldError("location"); }} />
-          <TextField id="location-ar" field="location_ar" label={t("locationAr")} value={locationAr} error={fieldErrors.location_ar} dir="rtl" onChange={(value) => { setLocationAr(value); clearFieldError("location_ar"); }} />
-          <TextField id="logo-url" field="logo_url" label={t("logoUrl")} value={logoUrl} error={fieldErrors.logo_url} type="url" onChange={(value) => { setLogoUrl(value); clearFieldError("logo_url"); }} />
-          <TextField id="cover-url" field="cover_url" label={t("coverUrl")} value={coverUrl} error={fieldErrors.cover_url} type="url" onChange={(value) => { setCoverUrl(value); clearFieldError("cover_url"); }} />
-          <TextField id="whatsapp-url" field="whatsapp_url" label={t("whatsappUrl")} value={whatsAppUrl} error={fieldErrors.whatsapp_url} type="url" onChange={(value) => { setWhatsAppUrl(value); clearFieldError("whatsapp_url"); }} />
-          <TextField id="facebook-url" field="facebook_url" label={t("facebookUrl")} value={facebookUrl} error={fieldErrors.facebook_url} type="url" onChange={(value) => { setFacebookUrl(value); clearFieldError("facebook_url"); }} />
-          <TextField id="instagram-url" field="instagram_url" label={t("instagramUrl")} value={instagramUrl} error={fieldErrors.instagram_url} type="url" onChange={(value) => { setInstagramUrl(value); clearFieldError("instagram_url"); }} />
-          <TextField id="telegram-url" field="telegram_url" label={t("telegramUrl")} value={telegramUrl} error={fieldErrors.telegram_url} type="url" onChange={(value) => { setTelegramUrl(value); clearFieldError("telegram_url"); }} />
+        <div className="store-form-sections">
+          <StoreFormSection title={t("sections.basic")}>
+            <TextField id="name" field="name" label={t("name")} value={name} error={fieldErrors.name} onChange={(value) => { setName(value); clearFieldError("name"); }} required />
+          </StoreFormSection>
+          <StoreFormSection title={t("sections.description")}>
+            <TextAreaField id="description" field="description" label={t("descriptionField")} value={description} error={fieldErrors.description} onChange={(value) => { setDescription(value); clearFieldError("description"); }} />
+            <TextAreaField id="description-ar" field="description_ar" label={t("descriptionAr")} value={descriptionAr} error={fieldErrors.description_ar} dir="rtl" onChange={(value) => { setDescriptionAr(value); clearFieldError("description_ar"); }} />
+          </StoreFormSection>
+          <StoreFormSection title={t("sections.location")}>
+            <TextField id="location" field="location" label={t("location")} value={location} error={fieldErrors.location} onChange={(value) => { setLocation(value); clearFieldError("location"); }} />
+            <TextField id="location-ar" field="location_ar" label={t("locationAr")} value={locationAr} error={fieldErrors.location_ar} dir="rtl" onChange={(value) => { setLocationAr(value); clearFieldError("location_ar"); }} />
+          </StoreFormSection>
+          <StoreFormSection title={t("sections.contact")}>
+            <TextField id="phone" field="phone" label={t("phone")} value={phone} error={fieldErrors.phone} onChange={(value) => { setPhone(value); clearFieldError("phone"); }} />
+            <TextField id="whatsapp-url" field="whatsapp_url" label={t("whatsappUrl")} value={whatsAppUrl} error={fieldErrors.whatsapp_url} type="url" onChange={(value) => { setWhatsAppUrl(value); clearFieldError("whatsapp_url"); }} />
+            <TextField id="facebook-url" field="facebook_url" label={t("facebookUrl")} value={facebookUrl} error={fieldErrors.facebook_url} type="url" onChange={(value) => { setFacebookUrl(value); clearFieldError("facebook_url"); }} />
+            <TextField id="instagram-url" field="instagram_url" label={t("instagramUrl")} value={instagramUrl} error={fieldErrors.instagram_url} type="url" onChange={(value) => { setInstagramUrl(value); clearFieldError("instagram_url"); }} />
+            <TextField id="telegram-url" field="telegram_url" label={t("telegramUrl")} value={telegramUrl} error={fieldErrors.telegram_url} type="url" onChange={(value) => { setTelegramUrl(value); clearFieldError("telegram_url"); }} />
+          </StoreFormSection>
+          <StoreFormSection title={t("sections.media")}>
+            <TextField id="logo-url" field="logo_url" label={t("logoUrl")} value={logoUrl} error={fieldErrors.logo_url} type="url" onChange={(value) => { setLogoUrl(value); clearFieldError("logo_url"); }} />
+            <TextField id="cover-url" field="cover_url" label={t("coverUrl")} value={coverUrl} error={fieldErrors.cover_url} type="url" onChange={(value) => { setCoverUrl(value); clearFieldError("cover_url"); }} />
+          </StoreFormSection>
+          <StoreFormSection title={t("sections.links")} full>
           <div className="field store-form-full" data-field="social_links">
             <label>{t("socialLinks")}</label>
             <p className="field-hint">{t("socialLinksHint")}</p>
@@ -314,6 +325,7 @@ export function StoreCreateForm() {
             </button>
             {fieldErrors.social_links && <p className="field-error">{fieldErrors.social_links}</p>}
           </div>
+          </StoreFormSection>
         </div>
 
         {formError && <p className="error-message" role="alert">{formError}</p>}
@@ -328,6 +340,15 @@ export function StoreCreateForm() {
           </button>
         </div>
       </form>
+    </section>
+  );
+}
+
+function StoreFormSection({title, children, full = false}: {title: string; children: ReactNode; full?: boolean}) {
+  return (
+    <section className={`store-form-section${full ? " store-form-section-full" : ""}`}>
+      <h3>{title}</h3>
+      <div className="store-form-grid">{children}</div>
     </section>
   );
 }
@@ -348,7 +369,7 @@ function TextField({id, field, label, value, error, type = "text", dir, required
   return (
     <div className="field" data-field={field}>
       <label htmlFor={id}>{label}</label>
-      <input id={id} type={type} dir={dir} value={value} required={required} onChange={(event) => onChange(event.target.value)} />
+      <input id={id} type={type} dir={dir ?? "auto"} value={value} required={required} onChange={(event) => onChange(event.target.value)} />
       {error && <p className="field-error">{error}</p>}
     </div>
   );
@@ -368,7 +389,7 @@ function TextAreaField({id, field, label, value, error, dir, onChange}: TextArea
   return (
     <div className="field store-form-full" data-field={field}>
       <label htmlFor={id}>{label}</label>
-      <textarea id={id} rows={4} dir={dir} value={value} onChange={(event) => onChange(event.target.value)} />
+      <textarea id={id} rows={4} dir={dir ?? "auto"} value={value} onChange={(event) => onChange(event.target.value)} />
       {error && <p className="field-error">{error}</p>}
     </div>
   );

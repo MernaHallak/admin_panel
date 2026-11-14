@@ -90,7 +90,7 @@ export function OverviewDashboard() {
         <div className="overview-metrics-grid">
           <MetricCard label={t("admins")} value={data.users.admins} icon={Users} locale={locale} />
           <MetricCard label={t("superAdmins")} value={data.users.super_admins} icon={ShieldCheck} locale={locale} />
-          <MetricCard label={t("storeAdminAssignments")} value={data.store_admin_assignments.total} icon={Users} locale={locale} />
+          {/* <MetricCard label={t("storeAdminAssignments")} value={data.store_admin_assignments.total} icon={Users} locale={locale} /> */}
           <MetricCard label={t("activeAssignments")} value={data.store_admin_assignments.active} icon={ShieldCheck} locale={locale} />
         </div>
       </section>

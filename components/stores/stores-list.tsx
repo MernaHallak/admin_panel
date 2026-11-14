@@ -9,6 +9,7 @@ import {useToggleStoreStatus} from "@/hook/mutations/use-toggle-store-status";
 import { Link } from "@/i18n/navigation";
 import { normalizeApiError } from "@/lib/api-error";
 import { useRouter } from "@/i18n/navigation";
+import {MobileRowActions} from "@/components/mobile-row-actions";
 import type { StoreListSort, StoreListStatus } from "@/types/store";
 
 const TABLE_COLUMN_COUNT = 5;
@@ -118,20 +119,16 @@ export function StoresList() {
   }
 
   return (
-    <section className="data-table-panel" aria-labelledby="stores-table-title">
-      <div className="table-toolbar">
+    <section className="data-table-panel stores-directory-panel" aria-labelledby="stores-table-title">
+      <header className="store-directory-header">
         <div className="table-toolbar-copy">
           <h2 id="stores-table-title">{t("tableTitle")}</h2>
           <p>{toolbarDescription}</p>
         </div>
 
-        <div className="table-toolbar-actions">
-          <Link className="primary-button" href="/stores/create">
-            {t("createAction")}
-          </Link>
-
+        <div className="store-directory-actions">
           {isFetching && !isPending && (
-            <span className="table-refreshing" aria-label={t("refreshing")}>
+            <span className="store-directory-refresh" aria-label={t("refreshing")}>
               <span className="spinner dark" aria-hidden="true" />
             </span>
           )}
@@ -146,7 +143,14 @@ export function StoresList() {
               aria-label={t("searchPlaceholder")}
             />
           </div>
+          <Link className="primary-button" href="/stores/create">
+            {t("createAction")}
+          </Link>
+        </div>
+      </header>
 
+      <div className="table-toolbar store-filters-toolbar">
+        <div className="store-filters">
           <label className="table-filter">
             <span className="sr-only">{t("statusFilter")}</span>
             <select
@@ -176,8 +180,8 @@ export function StoresList() {
         </div>
       </div>
 
-      <div className="table-scroll">
-        <table className="stores-table">
+      <div className="table-scroll desktop-list-table">
+        <table className="stores-table stores-directory-table">
           <thead>
             <tr>
               <th scope="col">{t("store")}</th>
@@ -261,7 +265,11 @@ export function StoresList() {
                         </Link>
                       </div>
                     </td>
-                    <td>{store.phone || "—"}</td>
+                    <td>
+                      {store.phone ? (
+                        <span className="store-phone-value" dir="ltr">{store.phone}</span>
+                      ) : "—"}
+                    </td>
                     <td>
                       <button
                         className={`store-status store-status-control ${store.is_active ? "active" : "inactive"}`}
@@ -314,6 +322,29 @@ export function StoresList() {
         </table>
       </div>
 
+      <div className="mobile-list" aria-label={t("tableTitle")}>
+        {isPending ? <MobileStoreSkeletons label={t("loading")} /> : null}
+        {isError ? <div className="mobile-list-state" role="alert"><strong>{t("loadError")}</strong><p>{normalizedError?.status === 401 ? t("sessionExpired") : normalizedError?.message ?? common(normalizedError?.translationKey ?? "unexpectedError")}</p>{normalizedError?.status === 401 ? <button className="secondary-button" type="button" onClick={() => router.replace("/login")}>{common("login")}</button> : <button className="secondary-button" type="button" onClick={() => refetch()}>{common("retry")}</button>}</div> : null}
+        {!isPending && !isError && !data?.data.length ? <div className="mobile-list-state"><p>{t("empty")}</p></div> : null}
+        {!isPending && !isError ? data?.data.map((store) => {
+          const name = getNonEmptyString(store.name_i18n?.en) || getNonEmptyString(store.name) || getNonEmptyString(store.slug) || t("unnamedStore");
+          const isUpdating = toggleStoreStatusMutation.isPending && toggleStoreStatusMutation.variables?.id === store.id;
+          return <article key={store.id} className="mobile-list-card mobile-store-card" tabIndex={0} role="link" aria-label={t("viewStoreDetails")} onClick={() => openStore(store.id)} onKeyDown={(event) => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openStore(store.id); } }}>
+            <div className="mobile-list-card-header"><Link className="mobile-list-title" href={`/stores/${store.id}`} title={name} onClick={(event) => event.stopPropagation()}><strong dir="auto">{name}</strong></Link><MobileRowActions label={t("actions")} actions={[{label: t("viewStoreDetails"), onSelect: () => openStore(store.id)}, {label: t("editStore"), onSelect: () => router.push(`/stores/${store.id}/edit`)}, {label: store.is_active ? t("deactivateStore") : t("activateStore"), onSelect: () => { void handleStoreStatusToggle(store.id, !store.is_active); }, disabled: toggleStoreStatusMutation.isPending}]} /></div>
+            <p className="mobile-list-meta mobile-store-phone">
+              <span>{t("phone")}:</span>
+              {store.phone ? (
+                <span className="mobile-store-phone-value" dir="ltr">{store.phone}</span>
+              ) : (
+                <span>{t("notAvailable")}</span>
+              )}
+            </p>
+            <div className="mobile-list-card-footer mobile-store-card-footer"><button className={`store-status store-status-control ${store.is_active ? "active" : "inactive"}`} type="button" disabled={isUpdating} aria-busy={isUpdating} aria-label={store.is_active ? t("deactivateStore") : t("activateStore")} onClick={(event) => { event.stopPropagation(); void handleStoreStatusToggle(store.id, !store.is_active); }}>{isUpdating ? <span className="spinner dark" aria-label={t("updatingStatus")} /> : store.is_active ? t("active") : t("inactive")}</button></div>
+            {statusUpdateError?.id === store.id ? <p className="field-error" role="alert">{statusUpdateError.message}</p> : null}
+          </article>;
+        }) : null}
+      </div>
+
       {data && data.pagination.total_pages > 1 && (
         <div className="table-pagination" aria-label={t("pagination")}>
           <button
@@ -357,4 +388,8 @@ function TableLoadingRows({ label }: { label: string }) {
       ))}
     </>
   );
+}
+
+function MobileStoreSkeletons({label}: {label: string}) {
+  return <>{[0, 1, 2, 3].map((row) => <div className="mobile-list-card mobile-list-skeleton" key={row} aria-label={label}><span className="skeleton mobile-list-skeleton-title" /><span className="skeleton mobile-list-skeleton-line" /><span className="skeleton mobile-list-skeleton-footer" /></div>)}</>;
 }

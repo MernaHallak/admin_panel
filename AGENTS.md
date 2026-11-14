@@ -12,3 +12,4 @@
 - Before structural or non-trivial feature work, consult `docs/admin-architecture-reference.md`.
 - Before reporting any UI work complete, perform a basic visual/UX review for alignment, spacing, responsiveness, RTL/LTR, localized strings, loading/error/empty states, and obvious duplicated or unreachable controls; fix clear regressions within scope.
 - If the documentation and the actual `../shop_portal` implementation ever differ, the actual `shop_portal` code is the final source of truth.
+- Final task reports must be concise but medium-detail: explain the original request, the root cause or prior behavior, the chosen approach and important implementation details, relevant backend/API findings, files changed, intentional omissions and their reason, and verification including typecheck/lint. Write enough context (roughly 50% implementation depth) for the report to be reviewed independently; do not reduce it to completion/status-only statements.

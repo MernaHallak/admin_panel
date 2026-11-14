@@ -4,7 +4,7 @@ import {AUTH_COOKIES} from "@/lib/auth/cookies";
 import {getBackendClient} from "@/lib/backend-client";
 import {normalizeBackendError} from "@/lib/server/backend-error";
 
-const QUERY_FIELDS = ["status", "sort", "page", "limit"] as const;
+const QUERY_FIELDS = ["q", "status", "sort", "page", "limit"] as const;
 const CREATE_FIELDS = ["name", "name_ar", "description", "description_ar", "is_active"] as const;
 function isRecord(value: unknown): value is Record<string, unknown> { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 async function getAccessToken() { return (await cookies()).get(AUTH_COOKIES.access)?.value; }

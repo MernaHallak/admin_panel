@@ -1,8 +1,8 @@
 "use client";
 
-import {useState, type KeyboardEvent, type MouseEvent} from "react";
+import {useEffect, useState, type KeyboardEvent, type MouseEvent} from "react";
 import {useSearchParams} from "next/navigation";
-import {Eye, Pencil, Trash2} from "lucide-react";
+import {Eye, Pencil, Search, Trash2} from "lucide-react";
 import {useLocale, useTranslations} from "next-intl";
 
 import {Link, usePathname, useRouter} from "@/i18n/navigation";
@@ -11,11 +11,14 @@ import {useSuperAdminSubcategories} from "@/hook/queries/use-super-admin-subcate
 import {useSuperAdminCategories} from "@/hook/queries/use-super-admin-categories";
 import {getLocalizedValue} from "@/lib/i18n/get-localized-value";
 import {normalizeApiError} from "@/lib/api-error";
+import {MobileRowActions} from "@/components/mobile-row-actions";
 import type {SupportedLocale} from "@/i18n/routing";
 import type {SuperAdminSubcategoriesParams} from "@/types/category";
 
 const TABLE_COLUMN_COUNT = 4;
 const DEFAULT_LIMIT = 20;
+const MAX_QUERY_LENGTH = 150;
+const SEARCH_DEBOUNCE_MS = 350;
 const SORTS = ["name_asc", "name_desc", "newest", "oldest"] as const;
 
 function isInteractiveTarget(target: EventTarget | null) {
@@ -41,6 +44,8 @@ export function SubcategoriesList() {
   const [actionError, setActionError] = useState<string>();
   const remove = useDeleteSubcategory();
 
+  const q = searchParams.get("q") ?? "";
+  const [searchValue, setSearchValue] = useState(q);
   const categoryId = searchParams.get("category_id") ?? "";
   const status = searchParams.get("status") === "active" || searchParams.get("status") === "inactive"
     ? searchParams.get("status")!
@@ -53,6 +58,7 @@ export function SubcategoriesList() {
   const requestedLimit = Number(searchParams.get("limit"));
   const limit = Number.isInteger(requestedLimit) && requestedLimit > 0 ? requestedLimit : DEFAULT_LIMIT;
   const params: SuperAdminSubcategoriesParams = {
+    q: q || undefined,
     category_id: categoryId || undefined,
     status: status as SuperAdminSubcategoriesParams["status"],
     sort,
@@ -61,7 +67,7 @@ export function SubcategoriesList() {
   };
   const {data, isPending, isError, error, refetch, isFetching} = useSuperAdminSubcategories(params);
   const normalized = isError ? normalizeApiError(error) : undefined;
-  const hasActiveFilters = Boolean(categoryId) || status !== "all" || sort !== "name_asc" || page !== 1 || limit !== DEFAULT_LIMIT;
+  const hasActiveFilters = Boolean(q) || Boolean(categoryId) || status !== "all" || sort !== "name_asc" || page !== 1 || limit !== DEFAULT_LIMIT;
 
   function updateParams(changes: Record<string, string | undefined>) {
     const next = new URLSearchParams(searchParams.toString());
@@ -72,6 +78,20 @@ export function SubcategoriesList() {
     const query = next.toString();
     router.push(query ? `${pathname}?${query}` : pathname);
   }
+
+  useEffect(() => {
+    setSearchValue(q);
+  }, [q]);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const nextQuery = searchValue.trim();
+      if (nextQuery === q) return;
+      updateParams({q: nextQuery || undefined, page: undefined});
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [q, searchValue, searchParams, pathname, router]);
 
   function openSubcategory(id: string) {
     router.push(`/subcategories/${id}`);
@@ -106,6 +126,11 @@ export function SubcategoriesList() {
       </div>
       <div className="table-toolbar-actions">
         <Link className="primary-button" href="/subcategories/create">{t("add")}</Link>
+        <label className="stores-search">
+          <Search size={18} aria-hidden="true" />
+          <span className="sr-only">{t("searchPlaceholder")}</span>
+          <input type="search" value={searchValue} maxLength={MAX_QUERY_LENGTH} placeholder={t("searchPlaceholder")} aria-label={t("searchPlaceholder")} onChange={(event) => setSearchValue(event.target.value)} />
+        </label>
         <label className="table-filter">
           <span className="sr-only">{t("category")}</span>
           <select aria-label={t("category")} value={categoryId} onChange={(event) => updateParams({category_id: event.target.value || undefined, page: undefined})}>
@@ -133,14 +158,14 @@ export function SubcategoriesList() {
             <option value="oldest">{controls("oldest")}</option>
           </select>
         </label>
-        {hasActiveFilters ? <button className="secondary-button" type="button" onClick={() => updateParams({category_id: undefined, status: undefined, sort: undefined, page: undefined, limit: undefined})}>{controls("reset")}</button> : null}
+        {hasActiveFilters ? <button className="secondary-button" type="button" onClick={() => updateParams({q: undefined, category_id: undefined, status: undefined, sort: undefined, page: undefined, limit: undefined})}>{controls("reset")}</button> : null}
       </div>
     </div>
 
     {actionError ? <p className="store-products-action-error" role="alert">{actionError}</p> : null}
 
     <div className="table-scroll">
-      <table className="stores-table">
+      <table className="stores-table subcategories-table">
         <thead><tr><th>{t("name")}</th><th>{t("category")}</th><th>{t("status")}</th><th>{t("actions")}</th></tr></thead>
         <tbody>
           {isPending ? <LoadingRows /> : isError ? <tr><td colSpan={TABLE_COLUMN_COUNT}><div className="table-state" role="alert"><strong>{t("loadError")}</strong><p>{normalized?.status === 403 ? common("forbidden") : common(normalized?.translationKey ?? "unexpectedError")}</p><button className="secondary-button" type="button" onClick={() => refetch()}>{common("retry")}</button></div></td></tr> : !data?.data.length ? <tr><td colSpan={TABLE_COLUMN_COUNT}><div className="table-state"><p>{hasActiveFilters ? controls("noMatches") : t("empty")}</p></div></td></tr> : data.data.map((item) => {
@@ -153,7 +178,7 @@ export function SubcategoriesList() {
                 <Link className="table-view-action" href={`/subcategories/${item.id}`} aria-label={t("view")} onClick={(event) => event.stopPropagation()}><Eye size={18} aria-hidden="true" /></Link>
                 <Link className="table-view-action" href={`/subcategories/${item.id}/edit`} aria-label={t("edit")} onClick={(event) => event.stopPropagation()}><Pencil size={18} aria-hidden="true" /></Link>
                 <button className="table-view-action danger" type="button" disabled={remove.isPending} aria-label={t("delete")} onClick={(event) => { event.stopPropagation(); setTarget(item.id); }}><Trash2 size={18} aria-hidden="true" /></button>
-              </div></td>
+              </div><MobileRowActions label={t("actions")} actions={[{label: t("view"), onSelect: () => openSubcategory(item.id)}, {label: t("edit"), onSelect: () => router.push(`/subcategories/${item.id}/edit`)}, {label: t("delete"), onSelect: () => setTarget(item.id), destructive: true, disabled: remove.isPending}]} /></td>
             </tr>;
           })}
         </tbody>

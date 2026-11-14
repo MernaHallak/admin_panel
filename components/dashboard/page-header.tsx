@@ -3,6 +3,7 @@ interface PageHeaderProps {
   title: string;
   description?: string;
   actions?: React.ReactNode;
+  className?: string;
 }
 
 export function PageHeader({
@@ -10,9 +11,10 @@ export function PageHeader({
   title,
   description,
   actions,
+  className,
 }: PageHeaderProps) {
   return (
-    <div className="page-heading">
+    <div className={`page-heading${className ? ` ${className}` : ""}`}>
       <div>
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1>{title}</h1>
